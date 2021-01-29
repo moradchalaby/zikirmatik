@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 import 'package:screen/screen.dart';
 
+import 'package:flutter_arc_speed_dial/flutter_speed_dial_menu_button.dart';
+import 'package:flutter_arc_speed_dial/main_menu_floating_action_button.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -34,6 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Color gcolor3 = Colors.black54;
   Color gcolor4 = Colors.red;
   bool scr = false;
+  bool _isShowDial = false;
   int _counter = 0;
 
   void _incrementCounter() {
@@ -48,6 +52,35 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Widget _offsetPopup() => PopupMenuButton<int>(
+      itemBuilder: (context) => [
+            PopupMenuItem(
+              value: 1,
+              child: Text(
+                "Flutter Open",
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+              ),
+            ),
+            PopupMenuItem(
+              value: 2,
+              child: Text(
+                "Flutter Tutorial",
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+              ),
+            ),
+          ],
+      icon: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: ShapeDecoration(
+            color: Colors.blue,
+            shape: StadiumBorder(
+              side: BorderSide(color: Colors.white, width: 2),
+            )),
+        //child: Icon(Icons.menu, color: Colors.white), <-- You can give your icon here
+      ));
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,9 +125,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      /* floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print('olduuu');
+          Container(height: 80.0, width: 80.0, child: _offsetPopup());
         },
         elevation: 0,
         highlightElevation: 7,
@@ -105,7 +138,86 @@ class _MyHomePageState extends State<MyHomePage> {
           color: tcol,
         ),
         backgroundColor: Colors.transparent,
-      ),
+      ), */
+      floatingActionButton: _getFloatingActionButton(),
+    );
+  }
+
+  Widget _getFloatingActionButton() {
+    return SpeedDialMenuButton(
+      //if needed to close the menu after clicking sub-FAB
+      isShowSpeedDial: _isShowDial,
+      //manually open or close menu
+      updateSpeedDialStatus: (isShow) {
+        //return any open or close change within the widget
+        this._isShowDial = isShow;
+      },
+      //general init
+      isMainFABMini: false,
+      mainMenuFloatingActionButton: MainMenuFloatingActionButton(
+          mini: false,
+          child: Icon(
+            Icons.menu_sharp,
+            color: tcol,
+          ),
+          elevation: 0,
+          highlightElevation: 7,
+          hoverColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
+          onPressed: () {},
+          closeMenuChild: Icon(
+            Icons.close,
+            color: tcol,
+          ),
+          closeMenuForegroundColor: Colors.transparent,
+          closeMenuBackgroundColor: Colors.transparent),
+      floatingActionButtonWidgetChildren: <FloatingActionButton>[
+        //Ayarlar
+        FloatingActionButton(
+          mini: true,
+          child: Icon(Icons.settings),
+          onPressed: () {
+            //if need to close menu after click
+            _isShowDial = false;
+            setState(() {});
+          },
+          backgroundColor: Colors.pink,
+        ),
+        FloatingActionButton(
+          mini: true,
+          child: Icon(Icons.volume_down),
+          onPressed: () {
+            //if need to toggle menu after click
+            _isShowDial = !_isShowDial;
+            setState(() {});
+          },
+          backgroundColor: Colors.orange,
+        ),
+
+        // listeler
+        FloatingActionButton(
+          mini: true,
+          child: Icon(Icons.volume_down),
+          onPressed: () {
+            //if need to toggle menu after click
+            _isShowDial = !_isShowDial;
+            setState(() {});
+          },
+          backgroundColor: Colors.orange,
+        ),
+        // Yeni kayyıt
+        FloatingActionButton(
+          mini: true,
+          child: Icon(Icons.volume_up),
+          onPressed: () {
+            //if no need to change the menu status
+          },
+          backgroundColor: Colors.deepPurple,
+        ),
+      ],
+      isSpeedDialFABsMini: true,
+      paddingBtwSpeedDialButton: 30.0,
     );
   }
 }
