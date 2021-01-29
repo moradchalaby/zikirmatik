@@ -1,9 +1,12 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 import 'package:screen/screen.dart';
 
 import 'package:flutter_arc_speed_dial/flutter_speed_dial_menu_button.dart';
 import 'package:flutter_arc_speed_dial/main_menu_floating_action_button.dart';
+import 'package:zikirmatik/liste.dart';
 
 void main() {
   runApp(MyApp());
@@ -125,20 +128,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      /* floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Container(height: 80.0, width: 80.0, child: _offsetPopup());
-        },
-        elevation: 0,
-        highlightElevation: 7,
-        hoverColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        child: Icon(
-          Icons.list,
-          color: tcol,
-        ),
-        backgroundColor: Colors.transparent,
-      ), */
       floatingActionButton: _getFloatingActionButton(),
     );
   }
@@ -173,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
           closeMenuForegroundColor: Colors.transparent,
           closeMenuBackgroundColor: Colors.transparent),
       floatingActionButtonWidgetChildren: <FloatingActionButton>[
-        //Ayarlar
+        //! Ayarlar
         FloatingActionButton(
           mini: true,
           child: Icon(Icons.settings),
@@ -184,36 +173,99 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           backgroundColor: Colors.pink,
         ),
-        FloatingActionButton(
-          mini: true,
-          child: Icon(Icons.volume_down),
-          onPressed: () {
-            //if need to toggle menu after click
-            _isShowDial = !_isShowDial;
-            setState(() {});
-          },
-          backgroundColor: Colors.orange,
-        ),
 
-        // listeler
+        //! Listeler
         FloatingActionButton(
           mini: true,
-          child: Icon(Icons.volume_down),
+          child: Icon(Icons.list),
           onPressed: () {
-            //if need to toggle menu after click
-            _isShowDial = !_isShowDial;
-            setState(() {});
+            /* showDialog(
+              context: context,
+              builder: (context) {
+                return Listeler();
+              },
+            ); */
+            showGeneralDialog(
+                barrierColor: Colors.black.withOpacity(0.5),
+                transitionBuilder: (context, a1, a2, widget) {
+                  final curvedValue =
+                      Curves.easeInOutBack.transform(a1.value) - 1.0;
+                  return Transform(
+                    transform:
+                        Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+                    child: Opacity(opacity: a1.value, child: listeler()),
+                  );
+                },
+                transitionDuration: Duration(milliseconds: 700),
+                barrierDismissible: true,
+                barrierLabel: '',
+                context: context,
+                pageBuilder: (context, animation1, animation2) {});
           },
-          backgroundColor: Colors.orange,
+          backgroundColor: Colors.blueAccent,
         ),
-        // Yeni kayyıt
+        //! Kaydet
+
         FloatingActionButton(
           mini: true,
-          child: Icon(Icons.volume_up),
+          child: Icon(
+            Icons.save,
+          ),
           onPressed: () {
-            //if no need to change the menu status
+            //sadfsdf
           },
           backgroundColor: Colors.deepPurple,
+        ),
+        //! Sıfırla
+
+        FloatingActionButton(
+          mini: true,
+          child: Icon(Icons.replay_outlined),
+          onPressed: () {
+            showGeneralDialog(
+                barrierColor: Colors.black.withOpacity(0.5),
+                transitionBuilder: (context, a1, a2, widget) {
+                  final curvedValue =
+                      Curves.easeInOutBack.transform(a1.value) - 1.0;
+                  return Transform(
+                    transform:
+                        Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+                    child: Opacity(
+                      opacity: a1.value,
+                      child: AlertDialog(
+                        backgroundColor: Colors.red[100],
+                        shape: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16.0)),
+                        title: Text('Yenile!!'),
+                        content: Text('Sayaç sıfırlansın mı?'),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                setState(() {
+                                  _counter = 0;
+                                });
+                              },
+                              child:
+                                  Icon(Icons.check, color: Colors.green[900])),
+                          TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Icon(
+                                Icons.cancel_outlined,
+                                color: Colors.red[900],
+                              ))
+                        ],
+                      ),
+                    ),
+                  );
+                },
+                transitionDuration: Duration(milliseconds: 200),
+                barrierDismissible: true,
+                barrierLabel: '',
+                context: context,
+                pageBuilder: (context, animation1, animation2) {});
+          },
+          backgroundColor: Colors.red[900],
         ),
       ],
       isSpeedDialFABsMini: true,
