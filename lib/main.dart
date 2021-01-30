@@ -14,10 +14,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => FontModel(),
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(),
-        home: MyHomePage(title: 'Flutter Demo Home Page'),
+      child: ChangeNotifierProvider(
+        create: (context) => SayacModel(),
+        child: ChangeNotifierProvider(
+          create: (context) => LightModel(),
+          child: ChangeNotifierProvider(
+            create: (context) => VibraModel(),
+            child: MaterialApp(
+              title: 'Flutter Demo',
+              theme: ThemeData(),
+              home: MyHomePage(title: 'Flutter Demo Home Page'),
+            ),
+          ),
+        ),
       ),
     );
   }

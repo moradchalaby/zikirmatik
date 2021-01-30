@@ -37,11 +37,26 @@ class _DuzenleState extends State<Duzenle> {
                         decoration: BoxDecoration(
                             color: Colors.blue,
                             borderRadius: BorderRadius.circular(50)),
-                        child: Icon(
-                          Icons.edit,
-                          color: Colors.white,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 50,
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.close),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ],

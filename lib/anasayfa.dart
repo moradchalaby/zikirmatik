@@ -19,24 +19,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Color tcol = Colors.black54;
-  Color gcolor1 = Colors.white54;
+  Color tcol;
+  Color gcolor1;
   Color gcolor2 = Colors.black;
   Color gcolor3 = Colors.black54;
   Color gcolor4 = Colors.red;
-  bool scr = false;
+  bool scr;
   bool _isShowDial = false;
-  int _counter = 0;
+  int sayici = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  @override
+  void initState() {
+    super.initState();
+    sayici = Provider.of<SayacModel>(context, listen: false).sayacItems;
 
-    if (_counter % 33 == 0) {
-      Vibration.vibrate();
-      print('TİTREDİ');
-    }
+    scr = Provider.of<LightModel>(context, listen: false).lightItems;
   }
 
 //! Menü düğmesi
@@ -69,55 +66,70 @@ class _MyHomePageState extends State<MyHomePage> {
             )),
         //child: Icon(Icons.menu, color: Colors.white), <-- You can give your icon here
       ));
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<FontModel>(
-      builder: (context, fontModel, child) {
-        return Scaffold(
-          //! ANA sayfa
-          body: InkWell(
-            onLongPress: () {
-              if (scr) {
-                setState(() {
-                  tcol = Colors.black54;
-                  gcolor1 = Colors.white54;
-                  gcolor2 = Colors.black;
-                  gcolor3 = Colors.black54;
-                  gcolor4 = Colors.red;
-                  scr = false;
-                });
-              } else {
-                setState(() {
-                  tcol = Colors.grey[900];
-                  gcolor1 = Colors.black;
-                  gcolor2 = Colors.black;
-                  gcolor3 = Colors.black;
-                  gcolor4 = Colors.black;
-                  scr = true;
-                });
-              }
-            },
-            onTap: () {
-              _incrementCounter();
-              setState(() {});
-            },
-            child: Container(
-              color: gcolor1,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      '${_counter}',
-                      style:
-                          TextStyle(color: tcol, fontSize: fontModel.zikirfont),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          floatingActionButton: _getFloatingActionButton(),
+    return Consumer<SayacModel>(
+      builder: (context, sayacmodel, child) {
+        return Consumer<FontModel>(
+          builder: (context, fontmodel, child) {
+            return Consumer<LightModel>(
+              builder: (context, lightmodel, child) {
+                return Consumer<VibraModel>(
+                  builder: (context, vibramodel, child) {
+                    return Scaffold(
+                      //! ANA sayfa
+                      body: InkWell(
+                        onLongPress: () {
+                          if (scr) {
+                            setState(() {
+                              scr = false;
+                            });
+                          } else {
+                            setState(() {
+                              scr = true;
+                            });
+                          }
+                          Provider.of<LightModel>(context, listen: false)
+                              .setvalue(scr);
+                        },
+                        onTap: () {
+                          if ((sayici + 1) % 33 == 0) {
+                            Vibration.vibrate(
+                                duration: 1000, amplitude: vibramodel.vibra);
+                            print('TİTREDİ');
+                          }
+                          setState(() {
+                            sayici++;
+                          });
+
+                          Provider.of<SayacModel>(context, listen: false)
+                              .setvalue(sayici);
+                        },
+                        child: Container(
+                          color: lightmodel.scolor,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  '${sayacmodel.sayac}',
+                                  style: TextStyle(
+                                      color: lightmodel.wcolor,
+                                      fontSize: fontmodel.zikirfont),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      floatingActionButton: _getFloatingActionButton(),
+                    );
+                  },
+                );
+              },
+            );
+          },
         );
       },
     );
@@ -125,183 +137,193 @@ class _MyHomePageState extends State<MyHomePage> {
 
 // ! Menü düğmesi
   Widget _getFloatingActionButton() {
-    return SpeedDialMenuButton(
-      //if needed to close the menu after clicking sub-FAB
-      isShowSpeedDial: _isShowDial,
-      //manually open or close menu
-      updateSpeedDialStatus: (isShow) {
-        //return any open or close change within the widget
-        this._isShowDial = isShow;
-      },
-      //general init
-      isMainFABMini: false,
-      mainMenuFloatingActionButton: MainMenuFloatingActionButton(
-          mini: false,
-          child: Icon(
-            Icons.menu_sharp,
-            color: tcol,
-          ),
-          elevation: 0,
-          highlightElevation: 7,
-          hoverColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          backgroundColor: Colors.transparent,
-          onPressed: () {},
-          closeMenuChild: Icon(
-            Icons.close,
-            color: tcol,
-          ),
-          closeMenuForegroundColor: Colors.transparent,
-          closeMenuBackgroundColor: Colors.transparent),
-      floatingActionButtonWidgetChildren: <FloatingActionButton>[
-        //! Ayarlar
-        FloatingActionButton(
-          mini: true,
-          child: Icon(Icons.settings),
-          onPressed: () {
-            //if need to close menu after click
-            _isShowDial = false;
-            showGeneralDialog(
-                barrierColor: Colors.black.withOpacity(0.5),
-                transitionBuilder: (context, a1, a2, widget) {
-                  final curvedValue =
-                      Curves.easeInOutBack.transform(a1.value) - 1.0;
-                  return Transform(
-                    transform:
-                        Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
-                    child: Opacity(opacity: a1.value, child: Ayarlar()),
-                  );
-                },
-                transitionDuration: Duration(milliseconds: 700),
-                barrierDismissible: true,
-                barrierLabel: '',
-                context: context,
-                pageBuilder: (context, animation1, animation2) {});
+    return Consumer<LightModel>(
+      builder: (context, lightmodel, child) {
+        return SpeedDialMenuButton(
+          //if needed to close the menu after clicking sub-FAB
+          isShowSpeedDial: _isShowDial,
+          //manually open or close menu
+          updateSpeedDialStatus: (isShow) {
+            //return any open or close change within the widget
+            this._isShowDial = isShow;
           },
-          backgroundColor: Colors.pink,
-        ),
+          //general init
+          isMainFABMini: false,
+          mainMenuFloatingActionButton: MainMenuFloatingActionButton(
+              mini: false,
+              child: Icon(
+                Icons.menu_sharp,
+                color: lightmodel.wcolor,
+              ),
+              elevation: 0,
+              highlightElevation: 7,
+              hoverColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              backgroundColor: Colors.transparent,
+              onPressed: () {},
+              closeMenuChild: Icon(
+                Icons.close,
+                color: lightmodel.wcolor,
+              ),
+              closeMenuForegroundColor: Colors.transparent,
+              closeMenuBackgroundColor: Colors.transparent),
+          floatingActionButtonWidgetChildren: <FloatingActionButton>[
+            //! Ayarlar
+            FloatingActionButton(
+              mini: true,
+              child: Icon(Icons.settings),
+              onPressed: () {
+                //if need to close menu after click
+                _isShowDial = false;
+                showGeneralDialog(
+                    barrierColor: Colors.black.withOpacity(0.5),
+                    transitionBuilder: (context, a1, a2, widget) {
+                      final curvedValue =
+                          Curves.easeInOutBack.transform(a1.value) - 1.0;
+                      return Transform(
+                        transform: Matrix4.translationValues(
+                            0.0, curvedValue * 200, 0.0),
+                        child: Opacity(opacity: a1.value, child: Ayarlar()),
+                      );
+                    },
+                    transitionDuration: Duration(milliseconds: 700),
+                    barrierDismissible: true,
+                    barrierLabel: '',
+                    context: context,
+                    pageBuilder: (context, animation1, animation2) {});
+              },
+              backgroundColor: Colors.pink,
+            ),
 
-        //! Listeler
-        FloatingActionButton(
-          mini: true,
-          child: Icon(Icons.list),
-          onPressed: () {
-            /* showDialog(
+            //! Listeler
+            FloatingActionButton(
+              mini: true,
+              child: Icon(Icons.list),
+              onPressed: () {
+                /* showDialog(
               context: context,
               builder: (context) {
                 return Listeler();
               },
             ); */
-            _isShowDial = false;
-            //!Liste Sayfası
-            showGeneralDialog(
-                barrierColor: Colors.black.withOpacity(0.5),
-                transitionBuilder: (context, a1, a2, widget) {
-                  final curvedValue =
-                      Curves.easeInOutBack.transform(a1.value) - 1.0;
-                  return Transform(
-                    transform:
-                        Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
-                    child: Opacity(
-                        opacity: a1.value,
-                        child: Listeler(
-                          themecolor: gcolor1,
-                          writecolor: tcol,
-                        )),
-                  );
-                },
-                transitionDuration: Duration(milliseconds: 700),
-                barrierDismissible: true,
-                barrierLabel: '',
-                context: context,
-                pageBuilder: (context, animation1, animation2) {});
-          },
-          backgroundColor: Colors.blueAccent,
-        ),
-        //! Kaydet
+                _isShowDial = false;
+                //!Liste Sayfası
+                showGeneralDialog(
+                    barrierColor: Colors.black.withOpacity(0.5),
+                    transitionBuilder: (context, a1, a2, widget) {
+                      final curvedValue =
+                          Curves.easeInOutBack.transform(a1.value) - 1.0;
+                      return Transform(
+                        transform: Matrix4.translationValues(
+                            0.0, curvedValue * 200, 0.0),
+                        child: Opacity(
+                            opacity: a1.value,
+                            child: Listeler(
+                              themecolor: lightmodel.scolor,
+                              writecolor: lightmodel.wcolor,
+                            )),
+                      );
+                    },
+                    transitionDuration: Duration(milliseconds: 700),
+                    barrierDismissible: true,
+                    barrierLabel: '',
+                    context: context,
+                    pageBuilder: (context, animation1, animation2) {});
+              },
+              backgroundColor: Colors.blueAccent,
+            ),
+            //! Kaydet
 
-        FloatingActionButton(
-          mini: true,
-          child: Icon(
-            Icons.save,
-          ),
-          onPressed: () {
-            //!Yeni kayıt ve Düzenleme Sayfası
-            _isShowDial = false;
-            showGeneralDialog(
-                barrierColor: Colors.black.withOpacity(0.5),
-                transitionBuilder: (context, a1, a2, widget) {
-                  final curvedValue =
-                      Curves.easeInOutBack.transform(a1.value) - 1.0;
-                  return Transform(
-                    transform:
-                        Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
-                    child: Opacity(opacity: a1.value, child: Duzenle()),
-                  );
-                },
-                transitionDuration: Duration(milliseconds: 700),
-                barrierDismissible: true,
-                barrierLabel: '',
-                context: context,
-                pageBuilder: (context, animation1, animation2) {});
-          },
-          backgroundColor: Colors.deepPurple,
-        ),
-        //! Sıfırla
+            FloatingActionButton(
+              mini: true,
+              child: Icon(
+                Icons.save,
+              ),
+              onPressed: () {
+                //!Yeni kayıt ve Düzenleme Sayfası
+                _isShowDial = false;
+                showGeneralDialog(
+                    barrierColor: Colors.black.withOpacity(0.5),
+                    transitionBuilder: (context, a1, a2, widget) {
+                      final curvedValue =
+                          Curves.easeInOutBack.transform(a1.value) - 1.0;
+                      return Transform(
+                        transform: Matrix4.translationValues(
+                            0.0, curvedValue * 200, 0.0),
+                        child: Opacity(opacity: a1.value, child: Duzenle()),
+                      );
+                    },
+                    transitionDuration: Duration(milliseconds: 700),
+                    barrierDismissible: true,
+                    barrierLabel: '',
+                    context: context,
+                    pageBuilder: (context, animation1, animation2) {});
+              },
+              backgroundColor: Colors.deepPurple,
+            ),
+            //! Sıfırla
 
-        FloatingActionButton(
-          mini: true,
-          child: Icon(Icons.replay_outlined),
-          onPressed: () {
-            _isShowDial = false;
-            showGeneralDialog(
-                barrierColor: Colors.black.withOpacity(0.5),
-                transitionBuilder: (context, a1, a2, widget) {
-                  final curvedValue =
-                      Curves.easeInOutBack.transform(a1.value) - 1.0;
-                  return Transform(
-                    transform:
-                        Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
-                    child: Opacity(
-                      opacity: a1.value,
-                      child: AlertDialog(
-                        backgroundColor: Colors.red[100],
-                        shape: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16.0)),
-                        title: Text('Yenile!!'),
-                        content: Text('Sayaç sıfırlansın mı?'),
-                        actions: [
-                          TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                setState(() {
-                                  _counter = 0;
-                                });
-                              },
-                              child:
-                                  Icon(Icons.check, color: Colors.green[900])),
-                          TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: Icon(
-                                Icons.cancel_outlined,
-                                color: Colors.red[900],
-                              ))
-                        ],
-                      ),
-                    ),
-                  );
-                },
-                transitionDuration: Duration(milliseconds: 200),
-                barrierDismissible: true,
-                barrierLabel: '',
-                context: context,
-                pageBuilder: (context, animation1, animation2) {});
-          },
-          backgroundColor: Colors.red[900],
-        ),
-      ],
-      isSpeedDialFABsMini: true,
-      paddingBtwSpeedDialButton: 30.0,
+            FloatingActionButton(
+              mini: true,
+              child: Icon(Icons.replay_outlined),
+              onPressed: () {
+                _isShowDial = false;
+                showGeneralDialog(
+                    barrierColor: Colors.black.withOpacity(0.5),
+                    transitionBuilder: (context, a1, a2, widget) {
+                      final curvedValue =
+                          Curves.easeInOutBack.transform(a1.value) - 1.0;
+                      return Consumer<SayacModel>(
+                        builder: (context, sayacmodel, child) {
+                          return Transform(
+                            transform: Matrix4.translationValues(
+                                0.0, curvedValue * 200, 0.0),
+                            child: Opacity(
+                              opacity: a1.value,
+                              child: AlertDialog(
+                                backgroundColor: Colors.red[100],
+                                shape: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16.0)),
+                                title: Text('Yenile!!'),
+                                content: Text('Sayaç sıfırlansın mı?'),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        setState(() {
+                                          sayacmodel.reset();
+                                          sayici = 0;
+                                        });
+                                      },
+                                      child: Icon(Icons.check,
+                                          color: Colors.green[900])),
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: Icon(
+                                        Icons.cancel_outlined,
+                                        color: Colors.red[900],
+                                      ))
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    transitionDuration: Duration(milliseconds: 200),
+                    barrierDismissible: true,
+                    barrierLabel: '',
+                    context: context,
+                    pageBuilder: (context, animation1, animation2) {});
+              },
+              backgroundColor: Colors.red[900],
+            ),
+          ],
+          isSpeedDialFABsMini: true,
+          paddingBtwSpeedDialButton: 30.0,
+        );
+      },
     );
   }
 }
