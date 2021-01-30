@@ -8,7 +8,8 @@
         {
             "name": "zikirmatik",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "flutterMode": "profile",
         }
     ]
 }

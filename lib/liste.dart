@@ -1,86 +1,129 @@
 import 'package:flutter/material.dart';
+import 'package:zikirmatik/yenikayit.dart';
 
-Widget listeler() {
-  return Dialog(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-    elevation: 16,
-    child: Container(
-      height: 400.0,
-      width: 360.0,
-      child: ListView(
-        children: <Widget>[
-          SizedBox(height: 20),
-          Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Liste",
-                      style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        FloatingActionButton(
-                          mini: true,
-                          child: Icon(Icons.add),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+class Listeler extends StatelessWidget {
+  const Listeler({Key key, this.themecolor, this.writecolor}) : super(key: key);
+  final Color themecolor;
+  final Color writecolor;
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+      elevation: 16,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 325,
+            height: 50,
+            decoration: BoxDecoration(
+                color: Colors.blue, borderRadius: BorderRadius.circular(50)),
+            child: Icon(
+              Icons.list,
+              color: Colors.white,
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(39)),
+            height: 400.0,
+            width: 360.0,
+            child: ListView(
+              children: <Widget>[
+                _buildName(
+                    themecolor: themecolor,
+                    writecolor: writecolor,
+                    zikirAdi: "Zikir 1",
+                    zikirSayi: 25,
+                    zikirSinir: 111),
+                _buildName(
+                    themecolor: themecolor,
+                    writecolor: writecolor,
+                    zikirAdi: "Zikir 2",
+                    zikirSayi: 325,
+                    zikirSinir: 1452),
+                _buildName(
+                    themecolor: themecolor,
+                    writecolor: writecolor,
+                    zikirAdi: "Zikir 3",
+                    zikirSayi: 15,
+                    zikirSinir: 33),
+                _buildName(
+                    themecolor: themecolor,
+                    writecolor: writecolor,
+                    zikirAdi: "Zikir 4",
+                    zikirSayi: 125,
+                    zikirSinir: 333),
+                _buildName(
+                    themecolor: themecolor,
+                    writecolor: writecolor,
+                    zikirAdi: "Zikir 4",
+                    zikirSayi: 125,
+                    zikirSinir: 333),
+                _buildName(
+                    themecolor: themecolor,
+                    writecolor: writecolor,
+                    zikirAdi: "Zikir 4",
+                    zikirSayi: 125,
+                    zikirSinir: 333),
+                _buildName(
+                    themecolor: themecolor,
+                    writecolor: writecolor,
+                    zikirAdi: "Zikir 4",
+                    zikirSayi: 125,
+                    zikirSinir: 333),
               ],
             ),
           ),
-          SizedBox(height: 20),
-          _buildName(
-              zikirRenk: Colors.amber,
-              zikirAdi: "Zikir 1",
-              zikirSayi: 25,
-              zikirSinir: 111),
-          _buildName(
-              zikirRenk: Colors.blue,
-              zikirAdi: "Zikir 2",
-              zikirSayi: 325,
-              zikirSinir: 1452),
-          _buildName(
-              zikirRenk: Colors.pink,
-              zikirAdi: "Zikir 3",
-              zikirSayi: 15,
-              zikirSinir: 33),
-          _buildName(
-              zikirRenk: Colors.green,
-              zikirAdi: "Zikir 4",
-              zikirSayi: 125,
-              zikirSinir: 333),
+          Padding(
+            padding: EdgeInsets.only(top: 0),
+            child: Container(
+              transform: Matrix4.translationValues(0.0, 0.0, 0.0),
+              width: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: Colors.blue,
+              ),
+              child: FloatingActionButton(
+                onPressed: () {
+                  showDialog(
+                      context: context, builder: (context) => Yenikayit());
+                },
+                mini: true,
+                child: Icon(
+                  Icons.add,
+                  color: Colors.blue,
+                ),
+                backgroundColor: writecolor,
+              ),
+            ),
+          )
         ],
       ),
-    ),
-  );
+    );
+  }
 }
 
 Widget _buildName(
-    {Color zikirRenk, String zikirAdi, int zikirSayi, int zikirSinir}) {
+    {Color themecolor = Colors.white,
+    Color writecolor = Colors.black87,
+    String zikirAdi,
+    int zikirSayi,
+    int zikirSinir}) {
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+    padding: const EdgeInsets.symmetric(horizontal: 0.5),
     child: Column(
       children: <Widget>[
-        SizedBox(height: 12),
-        Container(height: 1, color: zikirRenk),
-        SizedBox(height: 12),
+        SizedBox(height: 5),
+        Container(height: 1, color: writecolor),
+        SizedBox(height: 5),
         Row(
           children: <Widget>[
             FlatButton(
-              onPressed: () => print(zikirAdi),
+              onPressed: () {},
               child: CircleAvatar(
-                backgroundColor: zikirRenk,
+                backgroundColor: writecolor,
                 radius: 45,
                 child: Column(
                   children: [
@@ -92,7 +135,7 @@ Widget _buildName(
                       style: TextStyle(color: Colors.white),
                     ),
                     Icon(
-                      Icons.play_circle_outline,
+                      Icons.double_arrow_rounded,
                       color: Colors.white,
                     )
                   ],
@@ -103,26 +146,31 @@ Widget _buildName(
                 ), */
               ),
             ),
-            SizedBox(width: 12),
+            SizedBox(width: 10),
             Text(
               zikirAdi,
-              style: TextStyle(color: zikirRenk),
+              style: TextStyle(
+                color: writecolor,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
             ),
-            Spacer(),
+            SizedBox(width: 10),
             FloatingActionButton(
               mini: true,
               child: Icon(
                 Icons.delete_forever_outlined,
+                color: Colors.red[900],
               ),
-              backgroundColor: Colors.red[900],
+              backgroundColor: writecolor,
             ),
-            SizedBox(width: 12),
             FloatingActionButton(
               mini: true,
               child: Icon(
                 Icons.edit,
+                color: Colors.blue[900],
               ),
-              backgroundColor: Colors.blue[900],
+              backgroundColor: writecolor,
             ),
           ],
         ),
