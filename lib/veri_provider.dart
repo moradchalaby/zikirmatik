@@ -22,6 +22,7 @@ class FontModel extends ChangeNotifier {
   }
 }
 
+//! buraya clas gelecek web sitesine tekrar bak babab.... https://flutter.dev/docs/cookbook/persistence/reading-writing-files
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
 
