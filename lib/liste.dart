@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_screen/responsive_screen.dart';
+
 import 'package:zikirmatik/yenikayit.dart';
 
 class Listeler extends StatelessWidget {
@@ -7,6 +9,8 @@ class Listeler extends StatelessWidget {
   final Color writecolor;
   @override
   Widget build(BuildContext context) {
+    final wp = Screen(context).wp; //specify wp
+    final hp = Screen(context).hp; //specify hp
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
       elevation: 16,
@@ -14,21 +18,22 @@ class Listeler extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 325,
-            height: 50,
+            width: wp(80),
+            height: hp(5),
             decoration: BoxDecoration(
                 color: Colors.blue, borderRadius: BorderRadius.circular(50)),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 50,
+                  width: wp(10),
                 ),
                 Expanded(
                   flex: 1,
                   child: Icon(
                     Icons.list,
                     color: Colors.white,
+                    size: wp(10),
                   ),
                 ),
                 IconButton(
@@ -42,8 +47,8 @@ class Listeler extends StatelessWidget {
             decoration: BoxDecoration(
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(39)),
-            height: 400.0,
-            width: 360.0,
+            height: hp(60),
+            width: wp(80),
             child: ListView(
               children: <Widget>[
                 _buildName(
@@ -51,43 +56,50 @@ class Listeler extends StatelessWidget {
                     writecolor: writecolor,
                     zikirAdi: "Zikir 1",
                     zikirSayi: 25,
-                    zikirSinir: 111),
+                    zikirSinir: 111,
+                    context: context),
                 _buildName(
                     themecolor: themecolor,
                     writecolor: writecolor,
                     zikirAdi: "Zikir 2",
                     zikirSayi: 325,
-                    zikirSinir: 1452),
+                    zikirSinir: 1452,
+                    context: context),
                 _buildName(
                     themecolor: themecolor,
                     writecolor: writecolor,
                     zikirAdi: "Zikir 3",
                     zikirSayi: 15,
-                    zikirSinir: 33),
+                    zikirSinir: 33,
+                    context: context),
                 _buildName(
                     themecolor: themecolor,
                     writecolor: writecolor,
                     zikirAdi: "Zikir 4",
                     zikirSayi: 125,
-                    zikirSinir: 333),
+                    zikirSinir: 333,
+                    context: context),
                 _buildName(
                     themecolor: themecolor,
                     writecolor: writecolor,
                     zikirAdi: "Zikir 4",
                     zikirSayi: 125,
-                    zikirSinir: 333),
+                    zikirSinir: 333,
+                    context: context),
                 _buildName(
                     themecolor: themecolor,
                     writecolor: writecolor,
                     zikirAdi: "Zikir 4",
                     zikirSayi: 125,
-                    zikirSinir: 333),
+                    zikirSinir: 333,
+                    context: context),
                 _buildName(
                     themecolor: themecolor,
                     writecolor: writecolor,
                     zikirAdi: "Zikir 4",
                     zikirSayi: 125,
-                    zikirSinir: 333),
+                    zikirSinir: 333,
+                    context: context),
               ],
             ),
           ),
@@ -103,7 +115,7 @@ class Listeler extends StatelessWidget {
               child: FloatingActionButton(
                 onPressed: () {
                   showDialog(
-                      context: context, builder: (context) => Yenikayit());
+                      context: context, builder: (context) => YeniKayit());
                 },
                 mini: true,
                 child: Icon(
@@ -125,70 +137,89 @@ Widget _buildName(
     Color writecolor = Colors.black87,
     String zikirAdi,
     int zikirSayi,
-    int zikirSinir}) {
+    int zikirSinir,
+    BuildContext context}) {
+  final wp = Screen(context).wp; //specify wp
+  final hp = Screen(context).hp; //specify hp
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 0.5),
     child: Column(
       children: <Widget>[
-        SizedBox(height: 5),
-        Container(height: 1, color: writecolor),
-        SizedBox(height: 5),
-        Row(
-          children: <Widget>[
-            FlatButton(
-              onPressed: () {},
-              child: CircleAvatar(
-                backgroundColor: writecolor,
-                radius: 45,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "${zikirSayi}/${zikirSinir}",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    Icon(
-                      Icons.double_arrow_rounded,
-                      color: Colors.white,
-                    )
-                  ],
-                ), /* FloatingActionButton(
-                  mini: true,
-                  backgroundColor: Colors.red[900],
-                  child: Icon(Icons.delete_forever),
-                ), */
-              ),
-            ),
-            SizedBox(width: 10),
-            Text(
-              zikirAdi,
-              style: TextStyle(
-                color: writecolor,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-            SizedBox(width: 10),
-            FloatingActionButton(
-              mini: true,
-              child: Icon(
-                Icons.delete_forever_outlined,
-                color: Colors.red[900],
-              ),
-              backgroundColor: writecolor,
-            ),
-            FloatingActionButton(
-              mini: true,
-              child: Icon(
-                Icons.edit,
-                color: Colors.blue[900],
-              ),
-              backgroundColor: writecolor,
-            ),
-          ],
+        SizedBox(
+          height: hp(0.05),
         ),
+        Container(height: hp(0.1), color: writecolor),
+        SizedBox(height: hp(0.05)),
+        Container(
+          width: wp(100),
+          height: hp(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                flex: 0,
+                child: FlatButton(
+                  onPressed: () {},
+                  child: CircleAvatar(
+                    backgroundColor: writecolor,
+                    radius: 45,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: hp(3),
+                        ),
+                        Text(
+                          "${zikirSayi}/${zikirSinir}",
+                          style:
+                              TextStyle(color: Colors.white, fontSize: wp(3)),
+                        ),
+                        Icon(
+                          Icons.double_arrow_rounded,
+                          color: Colors.white,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  zikirAdi,
+                  style: TextStyle(
+                    color: writecolor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: wp(5),
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 0,
+                child: FloatingActionButton(
+                  onPressed: () {},
+                  mini: true,
+                  child: Icon(
+                    Icons.delete_forever_outlined,
+                    color: Colors.red[900],
+                  ),
+                  backgroundColor: writecolor,
+                ),
+              ),
+              Expanded(
+                flex: 0,
+                child: FloatingActionButton(
+                  onPressed: () {},
+                  mini: true,
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.blue[900],
+                  ),
+                  backgroundColor: writecolor,
+                ),
+              ),
+            ],
+          ),
+        )
       ],
     ),
   );

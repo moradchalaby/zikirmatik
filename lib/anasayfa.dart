@@ -3,7 +3,7 @@ import 'package:flutter_arc_speed_dial/flutter_speed_dial_menu_button.dart';
 import 'package:flutter_arc_speed_dial/main_menu_floating_action_button.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
-
+import 'package:responsive_screen/responsive_screen.dart';
 import 'ayar.dart';
 import 'duzenle.dart';
 import 'liste.dart';
@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         onTap: () {
                           if ((sayici + 1) % 33 == 0) {
                             Vibration.vibrate(
-                                duration: 1000, amplitude: vibramodel.vibra);
+                                duration: 300, amplitude: vibramodel.vibra);
                             print('TİTREDİ');
                           }
                           setState(() {
