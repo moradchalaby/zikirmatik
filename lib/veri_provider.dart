@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:zikirmatik/readandwrite.dart';
 
 class FontModel extends ChangeNotifier {
   double zikirfont = 225;
@@ -23,37 +24,6 @@ class FontModel extends ChangeNotifier {
 }
 
 //! buraya clas gelecek web sitesine tekrar bak babab.... https://flutter.dev/docs/cookbook/persistence/reading-writing-files
-Future<String> get _localPath async {
-  final directory = await getApplicationDocumentsDirectory();
-
-  return directory.path;
-}
-
-Future<File> get _localFile async {
-  final path = await _localPath;
-  return File('$path/data/ayar.json');
-}
-
-Future<int> readCounter() async {
-  try {
-    final file = await _localFile;
-
-    // Read the file
-    String contents = await file.readAsString();
-
-    return int.parse(contents);
-  } catch (e) {
-    // If encountering an error, return 0
-    return 0;
-  }
-}
-
-Future<File> writeCounter(int counter) async {
-  final file = await _localFile;
-
-  // Write the file
-  return file.writeAsString('$counter');
-}
 
 class SayacModel extends ChangeNotifier {
   int sayac = 0;
@@ -62,32 +32,14 @@ class SayacModel extends ChangeNotifier {
 
   void setvalue(int value) {
     sayac = value;
-    writeCounter(value);
+
     notifyListeners();
   }
 
   void reset() {
     sayac = 0;
-    writeCounter(sayac);
+
     notifyListeners();
-  }
-
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-
-    return directory.path;
-  }
-
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/data/ayar.json');
-  }
-
-  Future<File> writeCounter(int counter) async {
-    final file = await _localFile;
-
-    // Write the file
-    return file.writeAsString('$counter');
   }
 }
 

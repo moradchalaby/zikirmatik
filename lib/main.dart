@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zikirmatik/readandwrite.dart';
 
 import 'anasayfa.dart';
 import 'veri_provider.dart';
@@ -23,7 +24,10 @@ class MyApp extends StatelessWidget {
             child: MaterialApp(
               title: 'Flutter Demo',
               theme: ThemeData(),
-              home: MyHomePage(title: 'Flutter Demo Home Page'),
+              home: MyHomePage(
+                title: 'Flutter Demo Home Page',
+                storage: CounterStorage(),
+              ),
             ),
           ),
         ),

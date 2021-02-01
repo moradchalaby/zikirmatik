@@ -3,14 +3,17 @@ import 'package:flutter_arc_speed_dial/flutter_speed_dial_menu_button.dart';
 import 'package:flutter_arc_speed_dial/main_menu_floating_action_button.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
-import 'package:responsive_screen/responsive_screen.dart';
+
+import 'package:zikirmatik/readandwrite.dart';
 import 'ayar.dart';
 import 'duzenle.dart';
 import 'liste.dart';
 import 'veri_provider.dart';
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  final CounterStorage storage;
+
+  MyHomePage({Key key, this.title, @required this.storage}) : super(key: key);
 
   final String title;
 
@@ -26,7 +29,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Color gcolor4 = Colors.red;
   bool scr;
   bool _isShowDial = false;
-  int sayici = 0;
+  int sayici;
 
   @override
   void initState() {
@@ -34,6 +37,11 @@ class _MyHomePageState extends State<MyHomePage> {
     sayici = Provider.of<SayacModel>(context, listen: false).sayacItems;
 
     scr = Provider.of<LightModel>(context, listen: false).lightItems;
+    widget.storage.readCounter().then((String value) {
+      setState(() {
+        sayici = int.parse(value);
+      });
+    });
   }
 
 //! Menü düğmesi
@@ -102,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           setState(() {
                             sayici++;
                           });
-
+                          widget.storage.writeCounter(sayici.toString());
                           Provider.of<SayacModel>(context, listen: false)
                               .setvalue(sayici);
                         },
@@ -113,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  '${sayacmodel.sayac}',
+                                  '$sayici',
                                   style: TextStyle(
                                       color: lightmodel.wcolor,
                                       fontSize: fontmodel.zikirfont),
@@ -294,6 +302,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                           sayacmodel.reset();
                                           sayici = 0;
                                         });
+                                        CounterStorage storage =
+                                            CounterStorage();
+                                        storage.writeCounter(sayici.toString());
                                       },
                                       child: Icon(Icons.check,
                                           color: Colors.green[900])),

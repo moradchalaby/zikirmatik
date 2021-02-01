@@ -103,29 +103,25 @@ class Listeler extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 0),
-            child: Container(
-              transform: Matrix4.translationValues(0.0, 0.0, 0.0),
-              width: 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
+          Container(
+            transform: Matrix4.translationValues(0.0, 0.0, 0.0),
+            width: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50),
+              color: Colors.blue,
+            ),
+            child: FloatingActionButton(
+              onPressed: () {
+                showDialog(context: context, builder: (context) => YeniKayit());
+              },
+              mini: true,
+              child: Icon(
+                Icons.add,
                 color: Colors.blue,
               ),
-              child: FloatingActionButton(
-                onPressed: () {
-                  showDialog(
-                      context: context, builder: (context) => YeniKayit());
-                },
-                mini: true,
-                child: Icon(
-                  Icons.add,
-                  color: Colors.blue,
-                ),
-                backgroundColor: writecolor,
-              ),
+              backgroundColor: writecolor,
             ),
-          )
+          ),
         ],
       ),
     );
@@ -153,13 +149,15 @@ Widget _buildName(
         Container(
           width: wp(100),
           height: hp(10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                flex: 0,
-                child: FlatButton(
-                  onPressed: () {},
+          child: FlatButton(
+            onPressed: () {},
+            splashColor: Colors.transparent,
+            highlightColor: Colors.black87,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  flex: 0,
                   child: CircleAvatar(
                     backgroundColor: writecolor,
                     radius: 45,
@@ -181,43 +179,43 @@ Widget _buildName(
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Text(
-                  zikirAdi,
-                  style: TextStyle(
-                    color: writecolor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: wp(5),
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    zikirAdi,
+                    style: TextStyle(
+                      color: writecolor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: wp(5),
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 0,
-                child: FloatingActionButton(
-                  onPressed: () {},
-                  mini: true,
-                  child: Icon(
-                    Icons.delete_forever_outlined,
-                    color: Colors.red[900],
+                Expanded(
+                  flex: 0,
+                  child: FloatingActionButton(
+                    onPressed: () {},
+                    mini: true,
+                    child: Icon(
+                      Icons.delete_forever_outlined,
+                      color: Colors.red[900],
+                    ),
+                    backgroundColor: writecolor,
                   ),
-                  backgroundColor: writecolor,
                 ),
-              ),
-              Expanded(
-                flex: 0,
-                child: FloatingActionButton(
-                  onPressed: () {},
-                  mini: true,
-                  child: Icon(
-                    Icons.edit,
-                    color: Colors.blue[900],
+                Expanded(
+                  flex: 0,
+                  child: FloatingActionButton(
+                    onPressed: () {},
+                    mini: true,
+                    child: Icon(
+                      Icons.edit,
+                      color: Colors.blue[900],
+                    ),
+                    backgroundColor: writecolor,
                   ),
-                  backgroundColor: writecolor,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         )
       ],
