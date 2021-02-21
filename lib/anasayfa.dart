@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_arc_speed_dial/flutter_speed_dial_menu_button.dart';
 import 'package:flutter_arc_speed_dial/main_menu_floating_action_button.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
-
-import 'package:zikirmatik/readandwrite.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'ayar.dart';
 import 'duzenle.dart';
 import 'liste.dart';
 import 'veri_provider.dart';
 
 class MyHomePage extends StatefulWidget {
-  final CounterStorage storage;
-
-  MyHomePage({Key key, this.title, @required this.storage}) : super(key: key);
+  MyHomePage({
+    Key key,
+    this.title,
+  }) : super(key: key);
 
   final String title;
 
@@ -23,25 +24,22 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Color tcol;
-  Color gcolor1;
-  Color gcolor2 = Colors.black;
+
   Color gcolor3 = Colors.black54;
   Color gcolor4 = Colors.red;
   bool scr;
   bool _isShowDial = false;
   int sayici;
 
+  Box settingBox;
+
   @override
   void initState() {
     super.initState();
-    sayici = Provider.of<SayacModel>(context, listen: false).sayacItems;
 
-    scr = Provider.of<LightModel>(context, listen: false).lightItems;
-    widget.storage.readCounter().then((String value) {
-      setState(() {
-        sayici = int.parse(value);
-      });
-    });
+    settingBox = Hive.box('Settings');
+    scr = settingBox.get('light') == null ? true : settingBox.get('light');
+    sayici = settingBox.get('sayac') == null ? 0 : settingBox.get('sayac');
   }
 
 //! Menü düğmesi
@@ -99,23 +97,27 @@ class _MyHomePageState extends State<MyHomePage> {
                             });
                           }
                           Provider.of<LightModel>(context, listen: false)
-                              .setvalue(scr);
+                              .setvalue(
+                                  scr,
+                                  scr == true ? '#ffffff' : '#000000',
+                                  scr == true ? '#000000' : '#ffffff');
                         },
                         onTap: () {
                           if ((sayici + 1) % 33 == 0) {
                             Vibration.vibrate(
-                                duration: 300, amplitude: vibramodel.vibra);
+                                duration: 300,
+                                amplitude: settingBox.get('vibra'));
                             print('TİTREDİ');
                           }
                           setState(() {
                             sayici++;
                           });
-                          widget.storage.writeCounter(sayici.toString());
+
                           Provider.of<SayacModel>(context, listen: false)
                               .setvalue(sayici);
                         },
                         child: Container(
-                          color: lightmodel.scolor,
+                          color: HexColor(settingBox.get('color1')),
                           child: Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -123,8 +125,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                 Text(
                                   '$sayici',
                                   style: TextStyle(
-                                      color: lightmodel.wcolor,
-                                      fontSize: fontmodel.zikirfont),
+                                      color: HexColor(settingBox.get('color2')),
+                                      fontSize: settingBox.get('zikirfont')),
                                 ),
                               ],
                             ),
@@ -161,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
               mini: false,
               child: Icon(
                 Icons.menu_sharp,
-                color: lightmodel.wcolor,
+                color: HexColor(settingBox.get('color2')),
               ),
               elevation: 0,
               highlightElevation: 7,
@@ -171,7 +173,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {},
               closeMenuChild: Icon(
                 Icons.close,
-                color: lightmodel.wcolor,
+                color: HexColor(settingBox.get('color2')),
               ),
               closeMenuForegroundColor: Colors.transparent,
               closeMenuBackgroundColor: Colors.transparent),
@@ -227,8 +229,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Opacity(
                             opacity: a1.value,
                             child: Listeler(
-                              themecolor: lightmodel.scolor,
-                              writecolor: lightmodel.wcolor,
+                              themecolor: HexColor(settingBox.get('color1')),
+                              writecolor: HexColor(settingBox.get('color2')),
                             )),
                       );
                     },
@@ -302,9 +304,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                           sayacmodel.reset();
                                           sayici = 0;
                                         });
-                                        CounterStorage storage =
-                                            CounterStorage();
-                                        storage.writeCounter(sayici.toString());
                                       },
                                       child: Icon(Icons.check,
                                           color: Colors.green[900])),

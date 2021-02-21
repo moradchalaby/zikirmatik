@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_screen/responsive_screen.dart';
 
@@ -12,17 +14,26 @@ class Ayarlar extends StatefulWidget {
 }
 
 class _AyarlarState extends State<Ayarlar> {
-  double zikirfontayar = 225;
+  Box settingBox;
+  double zikirfontayar;
   double conopa = 1.0;
-  bool _lights = true;
-  int vibra = 255;
+  bool _lights;
+  int vibra;
+
   @override
   void initState() {
     super.initState();
-    zikirfontayar =
-        Provider.of<FontModel>(context, listen: false).zikirfontItems;
-    _lights = Provider.of<LightModel>(context, listen: false).lightItems;
-    vibra = Provider.of<VibraModel>(context, listen: false).vibraItems;
+    settingBox = Hive.box('Settings');
+
+    zikirfontayar = settingBox.get('zikirfont') == null
+        ? 255.0
+        : settingBox.get('zikirfont');
+
+    _lights = settingBox.get('light') == null ? true : settingBox.get('light');
+
+    vibra = settingBox.get('vibra') == null ? 150 : settingBox.get('vibra');
+    /*  Color color1 = settingBox.get('color1');
+    Color color2 = settingBox.get('color2'); */
   }
 
   @override
@@ -87,7 +98,7 @@ class _AyarlarState extends State<Ayarlar> {
                     child: new Slider(
                       activeColor: Colors.black54,
                       inactiveColor: Colors.black12,
-                      value: zikirfontayar,
+                      value: zikirfontayar == null ? 255.0 : zikirfontayar,
                       min: 1,
                       max: 363,
                       onChangeEnd: (double value) {
@@ -184,12 +195,16 @@ class _AyarlarState extends State<Ayarlar> {
                   setState(() {
                     _lights = value;
                   });
-                  Provider.of<LightModel>(context, listen: false)
-                      .setvalue(value);
+                  Provider.of<LightModel>(context, listen: false).setvalue(
+                      value,
+                      value == true ? '#ffffff' : '#000000',
+                      value == true ? '#000000' : '#ffffff');
                 },
                 secondary: Icon(
                   Icons.lightbulb_outline,
-                  color: _lights == false ? Colors.black : Colors.white,
+                  color: _lights == false
+                      ? HexColor('#000000')
+                      : HexColor('#ffffff'),
                   size: wp(5),
                 ),
               ),

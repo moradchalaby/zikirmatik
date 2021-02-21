@@ -4,78 +4,83 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:zikirmatik/readandwrite.dart';
 
 class FontModel extends ChangeNotifier {
-  double zikirfont = 225;
-
-  double get zikirfontItems => zikirfont;
+  Box settingBox;
 
   void setvalue(double value) {
-    zikirfont = value;
+    settingBox = Hive.box("Settings");
+
+    settingBox.put('zikirfont', value);
     notifyListeners();
   }
 
   void reset() {
-    zikirfont = 225;
+    settingBox = Hive.box("Settings");
+
+    settingBox.put('zikirfont', 0.0);
     notifyListeners();
   }
 }
 
-//! buraya clas gelecek web sitesine tekrar bak babab.... https://flutter.dev/docs/cookbook/persistence/reading-writing-files
-
 class SayacModel extends ChangeNotifier {
-  int sayac = 0;
-
-  int get sayacItems => sayac;
+  Box settingBox;
 
   void setvalue(int value) {
-    sayac = value;
+    settingBox = Hive.box("Settings");
 
+    settingBox.put('sayac', value);
     notifyListeners();
   }
 
   void reset() {
-    sayac = 0;
+    settingBox = Hive.box("Settings");
 
+    settingBox.put('sayac', 0);
     notifyListeners();
   }
 }
 
 class LightModel extends ChangeNotifier {
-  bool light = true;
-  Color scolor = Colors.white;
-  Color wcolor = Colors.black54;
-  bool get lightItems => light;
+  Box settingBox;
 
-  void setvalue(bool value) {
-    light = value;
-    scolor = light == true ? Colors.white : Colors.black;
-    wcolor = light == true ? Colors.black54 : Colors.grey[900];
+  void setvalue(bool value, String color1, String color2) {
+    settingBox = Hive.box("Settings");
+
+    settingBox.put('light', value);
+    settingBox.put('color1', color1);
+    settingBox.put('color2', color2);
+
     notifyListeners();
   }
 
   void reset() {
-    light = true;
-    scolor = light == true ? Colors.white : Colors.black;
-    wcolor = light == true ? Colors.black54 : Colors.grey[900];
+    settingBox = Hive.box("Settings");
+
+    settingBox.put('light', true);
+    settingBox.put('color2', '#7a7a7a');
+    settingBox.put('color1', '#ffffff');
+
     notifyListeners();
   }
 }
 
 class VibraModel extends ChangeNotifier {
-  int vibra = 255;
-  int get vibraItems => vibra;
+  Box settingBox;
 
   void setvalue(int value) {
-    vibra = value;
+    settingBox = Hive.box("Settings");
 
+    settingBox.put('vibra', value);
     notifyListeners();
   }
 
   void reset() {
-    vibra = 255;
+    settingBox = Hive.box("Settings");
+
+    settingBox.put('vibra', 150);
     notifyListeners();
   }
 }
