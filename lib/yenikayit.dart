@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_screen/responsive_screen.dart';
 
 class YeniKayit extends StatefulWidget {
@@ -9,6 +12,32 @@ class YeniKayit extends StatefulWidget {
 }
 
 class _YeniKayitState extends State<YeniKayit> {
+  final baslik = TextEditingController();
+  final titresim = TextEditingController();
+  final dongu = TextEditingController();
+  final zikirmetin = TextEditingController();
+  Map zikirsave = {
+    'baslik': 'başlık',
+    'titresim': 33,
+    'dongu': 99,
+    'zikirmetin': 'Allah',
+    'zikirsayac': 0,
+  };
+  Box zikirBox;
+  @override
+  void initState() {
+    zikirBox = Hive.box('Zikirler');
+    super.initState();
+  }
+
+  void dispose() {
+    zikirmetin.dispose();
+    baslik.dispose();
+    dongu.dispose();
+    titresim.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
@@ -18,7 +47,7 @@ class _YeniKayitState extends State<YeniKayit> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
       elevation: 16,
       child: Container(
-        height: hp(50),
+        height: MediaQuery.of(context).size.width,
         width: wp(80),
         child: Stack(
           children: [
@@ -44,6 +73,8 @@ class _YeniKayitState extends State<YeniKayit> {
                                 child: Padding(
                                   padding: EdgeInsets.all(10),
                                   child: TextFormField(
+                                    controller: baslik,
+                                    autofocus: true,
                                     decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
                                           borderRadius: BorderRadius.all(
@@ -66,6 +97,11 @@ class _YeniKayitState extends State<YeniKayit> {
                                 child: Padding(
                                   padding: EdgeInsets.all(10),
                                   child: TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
+                                    controller: titresim,
                                     decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
                                           borderRadius: BorderRadius.all(
@@ -84,6 +120,11 @@ class _YeniKayitState extends State<YeniKayit> {
                                 child: Padding(
                                   padding: EdgeInsets.all(10),
                                   child: TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
+                                    controller: dongu,
                                     decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
                                           borderRadius: BorderRadius.all(
@@ -106,6 +147,7 @@ class _YeniKayitState extends State<YeniKayit> {
                                 child: Padding(
                                   padding: EdgeInsets.all(10),
                                   child: TextFormField(
+                                    controller: zikirmetin,
                                     maxLines: 5,
                                     decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
@@ -129,7 +171,18 @@ class _YeniKayitState extends State<YeniKayit> {
                                 padding: EdgeInsets.all(10),
                                 child: FloatingActionButton(
                                   child: Icon(Icons.add),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    zikirsave['baslik'] = baslik.text;
+                                    zikirsave['titresim'] =
+                                        int.parse(titresim.text);
+                                    zikirsave['dongu'] = int.parse(dongu.text);
+                                    zikirsave['zikirmetin'] = zikirmetin.text;
+                                    zikirsave['zikirsayac'] = 0;
+                                    print(zikirsave);
+                                    var asd = zikirBox.add(zikirsave);
+                                    print(asd);
+                                    Navigator.of(context).pop();
+                                  },
                                   backgroundColor: Colors.blue[900],
                                 ),
                               ),

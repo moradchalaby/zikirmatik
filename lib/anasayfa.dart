@@ -30,7 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool scr;
   bool _isShowDial = false;
   int sayici;
-
+  Box zikirBox;
   Box settingBox;
 
   @override
@@ -40,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
     settingBox = Hive.box('Settings');
     scr = settingBox.get('light') == null ? true : settingBox.get('light');
     sayici = settingBox.get('sayac') == null ? 0 : settingBox.get('sayac');
+    zikirBox = Hive.box('Zikirler');
   }
 
 //! Menü düğmesi
@@ -117,7 +118,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               .setvalue(sayici);
                         },
                         child: Container(
-                          color: HexColor(settingBox.get('color1')),
+                          color: settingBox.get('light') == null
+                              ? Colors.white
+                              : HexColor(settingBox.get('color1')),
                           child: Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -125,8 +128,41 @@ class _MyHomePageState extends State<MyHomePage> {
                                 Text(
                                   '$sayici',
                                   style: TextStyle(
-                                      color: HexColor(settingBox.get('color2')),
+                                      color: settingBox.get('light') == null
+                                          ? Colors.black54
+                                          : HexColor(settingBox.get('color2')),
                                       fontSize: settingBox.get('zikirfont')),
+                                ),
+                                Positioned(
+                                  left: 40,
+                                  bottom: 30,
+                                  child: FloatingActionButton(
+                                    mini: true,
+                                    child: Icon(
+                                      Icons.exposure_neg_1_rounded,
+                                      color: settingBox.get('light') == null
+                                          ? Colors.black54
+                                          : HexColor(settingBox.get('color2')),
+                                    ),
+                                    elevation: 0,
+                                    highlightElevation: 7,
+                                    hoverColor: settingBox.get('light') == null
+                                        ? Colors.black54
+                                        : HexColor(settingBox.get('color2')),
+                                    splashColor: settingBox.get('light') == null
+                                        ? Colors.black54
+                                        : HexColor(settingBox.get('color2')),
+                                    backgroundColor: Colors.transparent,
+                                    onPressed: () {
+                                      setState(() {
+                                        sayici--;
+                                      });
+
+                                      Provider.of<SayacModel>(context,
+                                              listen: false)
+                                          .setvalue(sayici);
+                                    },
+                                  ),
                                 ),
                               ],
                             ),
@@ -163,7 +199,9 @@ class _MyHomePageState extends State<MyHomePage> {
               mini: false,
               child: Icon(
                 Icons.menu_sharp,
-                color: HexColor(settingBox.get('color2')),
+                color: settingBox.get('light') == null
+                    ? Colors.black54
+                    : HexColor(settingBox.get('color2')),
               ),
               elevation: 0,
               highlightElevation: 7,
@@ -173,7 +211,9 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {},
               closeMenuChild: Icon(
                 Icons.close,
-                color: HexColor(settingBox.get('color2')),
+                color: settingBox.get('light') == null
+                    ? Colors.black54
+                    : HexColor(settingBox.get('color2')),
               ),
               closeMenuForegroundColor: Colors.transparent,
               closeMenuBackgroundColor: Colors.transparent),
@@ -229,8 +269,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Opacity(
                             opacity: a1.value,
                             child: Listeler(
-                              themecolor: HexColor(settingBox.get('color1')),
-                              writecolor: HexColor(settingBox.get('color2')),
+                              themecolor: settingBox.get('light') == null
+                                  ? Colors.white
+                                  : HexColor(settingBox.get('color1')),
+                              writecolor: settingBox.get('light') == null
+                                  ? Colors.black
+                                  : HexColor(settingBox.get('color2')),
                             )),
                       );
                     },

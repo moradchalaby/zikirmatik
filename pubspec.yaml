@@ -34,11 +34,12 @@ dependencies:
   hexcolor: ^1.0.6
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  flutter_launcher_icons: ^0.8.1
   cupertino_icons: ^1.0.0
   flutter_arc_speed_dial: ^1.0.3
 flutter_native_splash: 
   color: "#ffffff"
-  image: assets/splashayet.png
+  image: assets/splashayet.gif
   ios: true
   android: true
   android_gravity: center
